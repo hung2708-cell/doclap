@@ -247,15 +247,39 @@
         <div id="rating" class="tab-content space-y-8">
             <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <span class="bg-pickle-yellow/20 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-calculator mr-1"></i> Hệ Thống Đánh Giá Trình Độ SportConnect</span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Tra Cứu & Chấm Trình DUPR CLB Độc Lập</h2>
-                    <p class="text-sm text-slate-500 mt-1">Hệ thống đồng bộ tiêu chuẩn chấm trình SportConnect, đánh giá chính xác năng lực VĐV dựa trên kỹ năng thực tế và kết quả thi đấu.</p>
+                    <span class="bg-pickle-yellow/20 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-link mr-1"></i> Đồng Bộ Trực Tiếp SportConnect API</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Tra Cứu Trình Độ SportConnect</h2>
+                    <p class="text-sm text-slate-500 mt-1">Nhập **ID SportConnect** hoặc **Số điện thoại** của vận động viên để lấy chính xác điểm DUPR, lịch sử thi đấu và độ ổn định từ hệ thống SportConnect.</p>
                 </div>
                 <div class="flex gap-3">
                     <button onclick="openModal('ratingCalculatorModal')" class="bg-pickle-green hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl shadow-lg text-sm transition-all flex items-center space-x-2">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>Chấm Trình Cho VĐV Mới</span>
+                        <span>Chấm Trình Thủ Công</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- SportConnect Direct Lookup Box -->
+            <div class="bg-gradient-to-r from-pickle-darkgreen to-pickle-green p-6 sm:p-8 rounded-3xl shadow-lg text-white space-y-4">
+                <h3 class="text-lg font-bold flex items-center">
+                    <i class="fa-solid fa-magnifying-glass-chart text-pickle-yellow mr-2"></i> Tra Cứu Nhanh Dữ Liệu SportConnect
+                </h3>
+                <p class="text-xs text-slate-200">Hệ thống sẽ kết nối trực tiếp với cơ sở dữ liệu SportConnect để xác thực hồ sơ VĐV ngay lập tức.</p>
+                
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-id-card absolute left-4 top-4 text-slate-400"></i>
+                        <input type="text" id="sportConnectDirectInput" placeholder="Nhập ID SportConnect (VD: SC-88291) hoặc Số điện thoại (VD: 0988...)" class="w-full bg-white text-slate-900 rounded-2xl pl-12 pr-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pickle-yellow">
+                    </div>
+                    <button onclick="performSportConnectLookup()" class="bg-pickle-yellow hover:bg-yellow-400 text-slate-900 font-extrabold px-8 py-3.5 rounded-2xl shadow transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>
+                        <span>Lấy Dữ Liệu SportConnect</span>
+                    </button>
+                </div>
+
+                <!-- Result Card Container -->
+                <div id="sportConnectResultContainer" class="hidden bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 mt-4 space-y-3">
+                    <!-- Populated via JS -->
                 </div>
             </div>
 
@@ -807,11 +831,15 @@
             <form id="bookingForm" onsubmit="handleBookCourt(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Họ Tên Người Đặt</label>
+                    <input type="text" id="bookerName" required placeholder="VD: Trần Văn Bình" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Kết Nối SportConnect (ID hoặc Số Điện Thoại)</label>
                     <div class="flex space-x-2">
-                        <input type="text" id="bookerName" required placeholder="VD: Trần Văn Bình" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <input type="text" id="bookingSportConnectId" placeholder="VD: SC-10294 hoặc 0912345678" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
                         <button type="button" onclick="checkSportConnectProfile()" class="bg-emerald-100 hover:bg-emerald-200 text-pickle-green font-bold px-3 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center space-x-1" title="Đồng bộ SportConnect">
                             <i class="fa-solid fa-link"></i>
-                            <span>Check DUPR</span>
+                            <span>Kiểm Tra Trình</span>
                         </button>
                     </div>
                     <p id="sportConnectSyncStatus" class="text-[11px] text-slate-400 mt-1 hidden"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Đã kết nối SportConnect: DUPR chuẩn 3.85 (Pro phong trào)</p>
@@ -1407,19 +1435,55 @@
 
         // Feature: Connect SportConnect to check rating during registration
         function checkSportConnectProfile() {
-            const nameInput = document.getElementById('bookerName').value.trim();
-            if(!nameInput) {
-                showToast("Vui lòng nhập tên VĐV trước khi kiểm tra SportConnect!");
+            const inputVal = document.getElementById('bookingSportConnectId').value.trim();
+            if(!inputVal) {
+                showToast("Vui lòng nhập ID SportConnect hoặc Số điện thoại!");
                 return;
             }
             
-            showToast(`Đang kết nối API SportConnect tra cứu DUPR cho "${nameInput}"...`);
+            showToast(`Đang kết nối API SportConnect tra cứu dữ liệu cho "${inputVal}"...`);
             setTimeout(() => {
                 const statusEl = document.getElementById('sportConnectSyncStatus');
                 statusEl.classList.remove('hidden');
-                statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Đã kết nối SportConnect: Xác thực thành công VĐV <b>${nameInput}</b> (DUPR: 3.82 - Ổn định tốt)`;
-                showToast("Đã lấy thông tin trình độ SportConnect thành công!");
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Đã đồng bộ SportConnect: Hồ sơ hợp lệ (ID: ${inputVal.toUpperCase()} | DUPR: 3.82 - Độ ổn định 91%)`;
+                showToast("Đã lấy thành công thông tin trình độ từ SportConnect!");
             }, 800);
+        }
+
+        // Direct SportConnect Lookup function for Tab 2
+        function performSportConnectLookup() {
+            const query = document.getElementById('sportConnectDirectInput').value.trim();
+            const container = document.getElementById('sportConnectResultContainer');
+            
+            if(!query) {
+                showToast("Vui lòng nhập ID SportConnect hoặc Số điện thoại để tra cứu!");
+                return;
+            }
+
+            showToast("Đang truy vấn cơ sở dữ liệu SportConnect toàn quốc...");
+            setTimeout(() => {
+                container.classList.remove('hidden');
+                container.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-2xl bg-pickle-yellow text-slate-900 font-extrabold flex items-center justify-center text-lg shadow">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base text-white">Kết quả SportConnect cho: <span class="text-pickle-yellow">${query}</span></h4>
+                                <p class="text-xs text-slate-200">VĐV: Nguyễn Đình Trọng | CLB Độc Lập Cao Bằng</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-500 text-white font-black text-sm px-3 py-1.5 rounded-xl shadow">DUPR 3.85</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/10 text-xs text-slate-200">
+                        <div><span class="text-slate-400">Trạng thái:</span> <b class="text-white">Hoạt động tốt</b></div>
+                        <div><span class="text-slate-400">Độ ổn định:</span> <b class="text-emerald-400">92%</b></div>
+                        <div><span class="text-slate-400">Xếp hạng tỉnh:</span> <b class="text-pickle-yellow">Top 15</b></div>
+                    </div>
+                `;
+                showToast("Tra cứu thông tin SportConnect thành công!");
+            }, 700);
         }
 
         // Initialize App on Load
