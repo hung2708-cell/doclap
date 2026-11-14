@@ -41,7 +41,6 @@
         body { font-family: 'Inter', sans-serif; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
@@ -79,11 +78,14 @@
 
                 <!-- Desktop Nav Tabs -->
                 <nav class="hidden lg:flex space-x-1">
-                    <button onclick="switchTab('dashboard')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-pickle-green hover:bg-slate-100 active" data-tab="dashboard">
+                    <button onclick="switchTab('dashboard')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-pickle-green bg-emerald-50" data-tab="dashboard">
                         <i class="fa-solid fa-chart-pie mr-2"></i>Tổng Quan
                     </button>
+                    <button onclick="switchTab('rating')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-pickle-green hover:bg-slate-100" data-tab="rating">
+                        <i class="fa-solid fa-award mr-2"></i>Chấm Trình & DUPR
+                    </button>
                     <button onclick="switchTab('tournaments')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-pickle-green hover:bg-slate-100" data-tab="tournaments">
-                        <i class="fa-solid fa-trophy mr-2"></i>Giải Đấu & BXH
+                        <i class="fa-solid fa-trophy mr-2"></i>Giải Đấu & Chia Bảng
                     </button>
                     <button onclick="switchTab('matches')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-pickle-green hover:bg-slate-100" data-tab="matches">
                         <i class="fa-solid fa-calendar-days mr-2"></i>Lịch Thi Đấu
@@ -98,9 +100,13 @@
 
                 <!-- Action Button -->
                 <div class="flex items-center space-x-3">
+                    <button onclick="openModal('ratingCalculatorModal')" class="bg-pickle-yellow hover:bg-yellow-400 text-slate-900 font-bold px-3.5 py-2.5 rounded-xl shadow text-sm transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span class="hidden sm:inline">Chấm Trình Nhanh</span>
+                    </button>
                     <button onclick="openModal('quickMatchModal')" class="bg-gradient-to-r from-pickle-green to-emerald-600 hover:from-pickle-green hover:to-emerald-700 text-white font-medium px-4 py-2.5 rounded-xl shadow-md text-sm transition-all transform active:scale-95 flex items-center space-x-2">
                         <i class="fa-solid fa-plus-circle"></i>
-                        <span class="hidden sm:inline">Tạo Trận Đấu Nhanh</span>
+                        <span class="hidden sm:inline">Tạo Trận</span>
                     </button>
                     <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
                         <i class="fa-solid fa-bars text-xl"></i>
@@ -112,7 +118,8 @@
         <!-- Mobile Nav Menu -->
         <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-slate-100 px-4 pt-2 pb-4 space-y-1">
             <button onclick="switchTab('dashboard'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-chart-pie mr-2 text-pickle-green"></i> Tổng Quan</button>
-            <button onclick="switchTab('tournaments'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-trophy mr-2 text-pickle-green"></i> Giải Đấu & BXH</button>
+            <button onclick="switchTab('rating'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-award mr-2 text-pickle-green"></i> Chấm Trình & DUPR</button>
+            <button onclick="switchTab('tournaments'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-trophy mr-2 text-pickle-green"></i> Giải Đấu & Chia Bảng</button>
             <button onclick="switchTab('matches'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-calendar-days mr-2 text-pickle-green"></i> Lịch Thi Đấu</button>
             <button onclick="switchTab('players'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-users mr-2 text-pickle-green"></i> Thành Viên & Đội</button>
             <button onclick="switchTab('courts'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-table-tennis-paddle-ball mr-2 text-pickle-green"></i> Đặt Sân & Lịch CLB</button>
@@ -124,26 +131,26 @@
 
         <!-- ================= TAB 1: DASHBOARD ================= -->
         <div id="dashboard" class="tab-content active space-y-8">
-            <!-- Welcome Banner -->
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-pickle-darkgreen via-pickle-green to-emerald-800 text-white shadow-xl p-6 sm:p-10">
-                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-pickle-yellow/10 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="relative z-10 max-w-2xl">
-                    <div class="inline-flex items-center space-x-2 bg-pickle-yellow/20 text-pickle-yellow text-xs font-bold px-3 py-1 rounded-full mb-4 border border-pickle-yellow/30">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>CỘNG ĐỒNG PICKLEBALL HÀNG ĐẦU</span>
+            <!-- Welcome Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-pickle-darkgreen via-pickle-green to-emerald-700 text-white p-8 sm:p-12 shadow-xl">
+                <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-pickle-yellow">
+                        <i class="fa-solid fa-star"></i>
+                        <span>Cổng Quản Lý & Chấm Trình SportConnect Pro</span>
                     </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">Chào mừng đến với CLB Độc Lập</h2>
-                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed mb-6">
-                        Nền tảng quản lý lịch thi đấu, giao lưu, xếp hạng và đặt sân chuyên nghiệp. Cùng kết nối đam mê, rèn luyện sức khỏe và nâng cao trình độ mỗi ngày!
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Chào mừng đến với CLB Độc Lập</h2>
+                    <p class="text-slate-100 text-sm sm:text-base leading-relaxed">
+                        Nền tảng quản lý lịch thi đấu, tra cứu điểm DUPR chuẩn SportConnect, xếp hạng tay vợt và đặt sân trực tuyến chuyên nghiệp tại Cao Bằng.
                     </p>
-                    <div class="flex flex-wrap gap-3">
+                    <div class="flex flex-wrap gap-3 pt-2">
                         <button onclick="switchTab('matches')" class="bg-pickle-yellow text-slate-900 font-bold px-5 py-2.5 rounded-xl shadow hover:bg-yellow-400 transition-all text-sm flex items-center space-x-2">
                             <i class="fa-solid fa-calendar-check"></i>
                             <span>Xem Lịch Hôm Nay</span>
                         </button>
-                        <button onclick="switchTab('courts')" class="bg-white/10 hover:bg-white/20 text-white font-medium px-5 py-2.5 rounded-xl backdrop-blur transition-all text-sm border border-white/20 flex items-center space-x-2">
-                            <i class="fa-solid fa-bookmark"></i>
-                            <span>Đặt Sân Ngay</span>
+                        <button onclick="switchTab('rating')" class="bg-white/10 hover:bg-white/20 text-white font-medium px-5 py-2.5 rounded-xl backdrop-blur transition-all text-sm border border-white/20 flex items-center space-x-2">
+                            <i class="fa-solid fa-award"></i>
+                            <span>Tra Cứu Chấm Trình DUPR</span>
                         </button>
                     </div>
                 </div>
@@ -175,12 +182,12 @@
 
                 <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center space-x-4">
                     <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl font-bold shadow-inner">
-                        <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+                        <i class="fa-solid fa-award"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sân Thi Đấu</p>
-                        <h3 class="text-2xl font-bold text-slate-800">4 Sân</h3>
-                        <span class="text-xs font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Tiêu chuẩn quốc tế</span>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Trình Độ TB CLB</p>
+                        <h3 class="text-2xl font-bold text-slate-800">3.78 DUPR</h3>
+                        <span class="text-xs font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Khá & Nâng cao</span>
                     </div>
                 </div>
 
@@ -236,12 +243,68 @@
             </div>
         </div>
 
-        <!-- ================= TAB 2: TOURNAMENTS & RANKINGS ================= -->
+        <!-- ================= TAB 2: RATING & DUPR SYSTEM ================= -->
+        <div id="rating" class="tab-content space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <span class="bg-pickle-yellow/20 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-calculator mr-1"></i> Hệ Thống Đánh Giá Trình Độ SportConnect</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Tra Cứu & Chấm Trình DUPR CLB Độc Lập</h2>
+                    <p class="text-sm text-slate-500 mt-1">Hệ thống đồng bộ tiêu chuẩn chấm trình SportConnect, đánh giá chính xác năng lực VĐV dựa trên kỹ năng thực tế và kết quả thi đấu.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="openModal('ratingCalculatorModal')" class="bg-pickle-green hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl shadow-lg text-sm transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Chấm Trình Cho VĐV Mới</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search & Filter Bar -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div class="relative w-full sm:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="text" id="searchRatingInput" oninput="handleSearchRating()" placeholder="Nhập tên VĐV cần tra cứu trình độ..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                </div>
+                <div class="text-xs text-slate-500 font-medium">
+                    💡 <span class="text-pickle-green font-bold">Mẹo:</span> Điểm DUPR tự động cập nhật sau mỗi trận đấu giải nội bộ.
+                </div>
+            </div>
+
+            <!-- Member Ratings List Table -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center">
+                        <i class="fa-solid fa-list-check text-pickle-green mr-2"></i> Bảng Tra Cứu Trình Độ Vận Động Viên
+                    </h3>
+                    <div class="text-xs text-slate-500">Chuẩn SportConnect Pro</div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+                                <th class="py-3 px-4 rounded-l-xl">Họ Tên VĐV</th>
+                                <th class="py-3 px-4">Vai Trò</th>
+                                <th class="py-3 px-4 text-center">DUPR Rating</th>
+                                <th class="py-3 px-4 text-center">Độ Ổn Định</th>
+                                <th class="py-3 px-4 text-center">Xếp Hạng Kỹ Thuật</th>
+                                <th class="py-3 px-4 text-center rounded-r-xl">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ratingTableBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: TOURNAMENTS & GROUP STAGES ================= -->
         <div id="tournaments" class="tab-content space-y-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800">Quản Lý Giải Đấu & Xếp Hạng</h2>
-                    <p class="text-sm text-slate-500">Tạo giải đấu mới, chọn thể thức và theo dõi bảng xếp hạng tự động.</p>
+                    <h2 class="text-2xl font-extrabold text-slate-800">Quản Lý Giải Đấu & Chia Bảng Đấu</h2>
+                    <p class="text-sm text-slate-500">Tạo giải đấu, tự động bốc thăm chia bảng, xếp lịch vòng tròn và knock-out.</p>
                 </div>
                 <button onclick="openModal('createTournamentModal')" class="bg-pickle-green hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow text-sm flex items-center space-x-2 transition-all">
                     <i class="fa-solid fa-plus"></i>
@@ -255,7 +318,7 @@
             </div>
 
             <!-- Tournament Detail Section -->
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-8">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-5 gap-4">
                     <div>
                         <div class="flex items-center space-x-3 mb-2">
@@ -265,18 +328,32 @@
                         <h3 id="currentTourneyName" class="text-2xl font-bold text-slate-900">Giải Vô Địch Độc Lập Cup 2026</h3>
                         <p id="currentTourneyDesc" class="text-sm text-slate-500 mt-1">Giải đấu nội bộ dành cho toàn thể thành viên CLB Độc Lập tranh tài nội dung Đôi Nam & Đôi Nam Nữ.</p>
                     </div>
-                    <div class="flex items-center space-x-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="openModal('drawGroupsModal')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-sm shadow transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-shuffle"></i>
+                            <span>Chia Bảng Tự Động</span>
+                        </button>
                         <button onclick="generateTournamentSchedule()" class="bg-pickle-yellow hover:bg-yellow-400 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm shadow transition-all flex items-center space-x-2">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            <span>Tự Động Sinh Lịch Đấu</span>
+                            <span>Tạo Lịch Đấu</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Leaderboard Table -->
+                <!-- Group Stage Visualizer -->
                 <div>
                     <h4 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                        <i class="fa-solid fa-ranking-star text-pickle-green mr-2"></i> Bảng Xếp Hạng Giải Đấu
+                        <i class="fa-solid fa-diagram-project text-pickle-green mr-2"></i> Sơ Đồ Chia Bảng Đấu (Group Stage)
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="groupsContainer">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Leaderboard Table -->
+                <div class="pt-4 border-t border-slate-100">
+                    <h4 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-ranking-star text-pickle-green mr-2"></i> Bảng Xếp Hạng Tổng Sắp
                     </h4>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
@@ -300,65 +377,39 @@
             </div>
         </div>
 
-        <!-- ================= TAB 3: MATCH SCHEDULES ================= -->
+        <!-- ================= TAB 4: MATCH SCHEDULES ================= -->
         <div id="matches" class="tab-content space-y-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800">Quản Lý Lịch Thi Đấu</h2>
-                    <p class="text-sm text-slate-500">Lọc, xem lịch thi đấu theo sân, ngày và cập nhật tỉ số trực tiếp.</p>
+                    <h2 class="text-2xl font-extrabold text-slate-800">Lịch Thi Đấu & Tỉ Số Trực Tuyến</h2>
+                    <p class="text-sm text-slate-500">Cập nhật lịch thi đấu, sân đấu và cập nhật tỉ số các trận diễn ra trong ngày tại CLB.</p>
                 </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="openModal('quickMatchModal')" class="bg-pickle-green hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-sm shadow transition-all flex items-center space-x-2">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>Thêm Trận Đấu</span>
-                    </button>
-                </div>
+                <button onclick="openModal('quickMatchModal')" class="bg-pickle-green hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow text-sm flex items-center space-x-2 transition-all">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Tạo Trận Đấu Mới</span>
+                </button>
             </div>
 
-            <!-- Filters Bar -->
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                    <div class="flex items-center space-x-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200">
-                        <i class="fa-solid fa-filter text-slate-400"></i>
-                        <span class="text-xs font-semibold text-slate-600 uppercase">Lọc theo sân:</span>
-                        <select id="filterCourt" onchange="renderMatchesList()" class="bg-transparent text-sm font-medium text-slate-800 focus:outline-none">
-                            <option value="ALL">Tất cả các sân</option>
-                            <option value="Sân 1">Sân 1 (Trung tâm)</option>
-                            <option value="Sân 2">Sân 2</option>
-                            <option value="Sân 3">Sân 3</option>
-                            <option value="Sân 4">Sân 4</option>
-                        </select>
-                    </div>
-
-                    <div class="flex items-center space-x-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200">
-                        <i class="fa-solid fa-calendar text-slate-400"></i>
-                        <span class="text-xs font-semibold text-slate-600 uppercase">Trạng thái:</span>
-                        <select id="filterStatus" onchange="renderMatchesList()" class="bg-transparent text-sm font-medium text-slate-800 focus:outline-none">
-                            <option value="ALL">Tất cả trạng thái</option>
-                            <option value="UPCOMING">Sắp diễn ra</option>
-                            <option value="LIVE">Đang thi đấu (Live)</option>
-                            <option value="COMPLETED">Đã kết thúc</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="text-xs text-slate-500 font-medium">
-                    Tổng số trận: <span id="totalMatchesCount" class="font-bold text-slate-800">0</span>
-                </div>
+            <!-- Matches Filters -->
+            <div class="flex flex-wrap gap-2">
+                <button onclick="filterMatches('ALL')" class="match-filter-btn px-4 py-2 bg-emerald-50 text-pickle-green font-bold rounded-xl text-xs" data-filter="ALL">Tất Cả</button>
+                <button onclick="filterMatches('LIVE')" class="match-filter-btn px-4 py-2 bg-white text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-xs border border-slate-200" data-filter="LIVE">Đang Trực Tiếp (LIVE)</button>
+                <button onclick="filterMatches('UPCOMING')" class="match-filter-btn px-4 py-2 bg-white text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-xs border border-slate-200" data-filter="UPCOMING">Sắp Diễn Ra</button>
+                <button onclick="filterMatches('COMPLETED')" class="match-filter-btn px-4 py-2 bg-white text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-xs border border-slate-200" data-filter="COMPLETED">Đã Hoàn Thành</button>
             </div>
 
-            <!-- Matches List Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="fullMatchesListContainer">
-                <!-- Rendered dynamically -->
+            <!-- Match Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="matchesListContainer">
+                <!-- Populated dynamically -->
             </div>
         </div>
 
-        <!-- ================= TAB 4: PLAYERS & TEAMS ================= -->
+        <!-- ================= TAB 5: PLAYERS & TEAMS ================= -->
         <div id="players" class="tab-content space-y-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800">Thành Viên & Đội Hình CLB</h2>
-                    <p class="text-sm text-slate-500">Quản lý danh sách hội viên, trình độ DUPR / Phong trào và các đôi tuyển.</p>
+                    <h2 class="text-2xl font-extrabold text-slate-800">Danh Sách Thành Viên & Cặp Đấu CLB</h2>
+                    <p class="text-sm text-slate-500">Quản lý thông tin tay vợt, điểm số DUPR và liên hệ giao lưu.</p>
                 </div>
                 <button onclick="openModal('addPlayerModal')" class="bg-pickle-green hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow text-sm flex items-center space-x-2 transition-all">
                     <i class="fa-solid fa-user-plus"></i>
@@ -366,20 +417,19 @@
                 </button>
             </div>
 
-            <!-- Players Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="playersGridContainer">
-                <!-- Rendered dynamically -->
+                <!-- Populated dynamically -->
             </div>
         </div>
 
-        <!-- ================= TAB 5: COURT BOOKING & SCHEDULE ================= -->
+        <!-- ================= TAB 6: COURTS & BOOKING ================= -->
         <div id="courts" class="tab-content space-y-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800">Đặt Sân & Lịch Sinh Hoạt CLB</h2>
-                    <p class="text-sm text-slate-500">Xem sơ đồ sân trống theo khung giờ và đăng ký giữ sân giao lưu.</p>
+                    <h2 class="text-2xl font-extrabold text-slate-800">Hệ Thống Sân Đấu & Đặt Sân CLB</h2>
+                    <p class="text-sm text-slate-500">4 sân tiêu chuẩn quốc tế có mái che và đèn chiếu sáng phục vụ thành viên 24/7.</p>
                 </div>
-                <button onclick="openModal('bookCourtModal')" class="bg-pickle-yellow hover:bg-yellow-400 text-slate-900 font-bold px-5 py-2.5 rounded-xl shadow text-sm flex items-center space-x-2 transition-all">
+                <button onclick="openModal('bookCourtModal')" class="bg-pickle-green hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow text-sm flex items-center space-x-2 transition-all">
                     <i class="fa-solid fa-bookmark"></i>
                     <span>Đăng Ký Đặt Sân</span>
                 </button>
@@ -391,7 +441,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <span class="text-xs font-bold text-pickle-green bg-emerald-50 px-2.5 py-1 rounded-full">Sân Tiêu Chuẩn</span>
-                            <h3 class="text-xl font-bold text-slate-800 mt-1">Sân 1 (Trung Tâm)</h3>
+                            <h3 class="text-xl font-bold text-slate-800 mt-1">Sân 1</h3>
                         </div>
                         <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
                             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse"></span> Đang trống
@@ -509,6 +559,7 @@
                 <h4 class="text-sm font-bold text-pickle-yellow uppercase tracking-wider mb-4">Liên Kết Nhanh</h4>
                 <ul class="space-y-2 text-sm text-slate-300">
                     <li><a href="#" onclick="switchTab('dashboard')" class="hover:text-pickle-lime">Trang chủ / Bảng điều khiển</a></li>
+                    <li><a href="#" onclick="switchTab('rating')" class="hover:text-pickle-lime">Chấm trình & Tra cứu DUPR</a></li>
                     <li><a href="#" onclick="switchTab('tournaments')" class="hover:text-pickle-lime">Giải đấu nội bộ</a></li>
                     <li><a href="#" onclick="switchTab('matches')" class="hover:text-pickle-lime">Lịch thi đấu & Tỉ số</a></li>
                     <li><a href="#" onclick="switchTab('courts')" class="hover:text-pickle-lime">Đăng ký đặt sân</a></li>
@@ -530,9 +581,90 @@
 
     <!-- ================= MODALS ================= -->
 
+    <!-- Modal: Rating Calculator / Chấm Trình -->
+    <div id="ratingCalculatorModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 transform transition-all">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                <h3 class="text-xl font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-calculator text-pickle-green mr-2"></i> Chấm Trình Độ SportConnect (DUPR Estimator)
+                </h3>
+                <button onclick="closeModal('ratingCalculatorModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <form id="ratingCalcForm" onsubmit="calculateRating(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Họ Tên Vận Động Viên</label>
+                    <input type="text" id="calcPlayerName" required placeholder="VD: Hoàng Văn Nam" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Kỹ thuật kiểm soát bóng (Dink & Drop shot)</label>
+                    <select id="calcSkill1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <option value="1">Mới bắt đầu, bóng hay bay cao (2.0 - 2.5)</option>
+                        <option value="2">Kiểm soát được bóng qua lại cơ bản (3.0)</option>
+                        <option value="3">Dink bền bỉ trên 10 nhịp, bỏ nhỏ tốt (3.5 - 4.0)</option>
+                        <option value="4">Kiểm soát hoàn hảo, chủ động ép góc đối thủ (4.5+)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Kỹ năng phản xạ & Tấn công (Volley & Smash)</label>
+                    <select id="calcSkill2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <option value="1">Chỉ đánh bóng qua lưới an toàn</option>
+                        <option value="2">Có cú smash cơ bản khi bóng hổng</option>
+                        <option value="3">Volley nhanh trên lưới, phản xạ tốt</option>
+                        <option value="4">Bắt vô lê hiểm hóc, tấn công uy lực diện rộng</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Kinh nghiệm thi đấu thực tế</label>
+                    <select id="calcSkill3" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <option value="1">Chỉ chơi giao lưu giải trí cuối tuần</option>
+                        <option value="2">Đã tham gia đánh đôi CLB thường xuyên</option>
+                        <option value="3">Thường xuyên đạt giải các giải phong trào tỉnh</option>
+                    </select>
+                </div>
+                <div class="pt-4 flex space-x-3">
+                    <button type="button" onclick="closeModal('ratingCalculatorModal')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 rounded-xl text-sm transition-all">Hủy</button>
+                    <button type="submit" class="flex-1 bg-pickle-green hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">Chấm Điểm & Lưu VĐV</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Draw Groups / Chia Bảng -->
+    <div id="drawGroupsModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-6 transform transition-all">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                <h3 class="text-xl font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-shuffle text-pickle-green mr-2"></i> Chia Bảng Đấu Tự Động
+                </h3>
+                <button onclick="closeModal('drawGroupsModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Chọn Giải Đấu</label>
+                    <select id="drawTourneySelect" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <option value="1">Độc Lập Cup 2026</option>
+                        <option value="2">Giao Lưu Mùa Hè 2026</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Số Lượng Bảng Đấu</label>
+                    <select id="drawGroupCount" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <option value="2">Chia thành 2 Bảng (A, B)</option>
+                        <option value="4">Chia thành 4 Bảng (A, B, C, D)</option>
+                    </select>
+                </div>
+                <p class="text-xs text-slate-500 italic">Hệ thống sẽ tự động phân bổ đều các cặp đấu dựa trên trình độ DUPR để đảm bảo tính cân bằng.</p>
+                <div class="pt-4 flex space-x-3">
+                    <button type="button" onclick="closeModal('drawGroupsModal')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 rounded-xl text-sm transition-all">Hủy</button>
+                    <button type="button" onclick="executeDrawGroups()" class="flex-1 bg-pickle-green hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">Thực Hiện Bốc Thăm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Quick Match / Add Match -->
     <div id="quickMatchModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 transform transition-all">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-6 transform transition-all">
             <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                 <h3 class="text-xl font-bold text-slate-900 flex items-center">
                     <i class="fa-solid fa-plus-circle text-pickle-green mr-2"></i> Tạo Trận Đấu Mới
@@ -544,17 +676,17 @@
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giải Đấu</label>
                     <select id="modalMatchTourney" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
                         <option value="Độc Lập Cup 2026">Độc Lập Cup 2026</option>
-                        <option value="Giao Lưu Cuối Tuần">Giao Lưu Cuối Tuần</option>
+                        <option value="Giao Lưu Mùa Hè 2026">Giao Lưu Mùa Hè 2026</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Đội 1 / VĐV 1</label>
-                        <input type="text" id="modalPlayer1" required placeholder="VD: Hùng / Tuấn" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cặp Đấu 1</label>
+                        <input type="text" id="modalPlayer1" required placeholder="VD: V. Quân & T. Long" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Đội 2 / VĐV 2</label>
-                        <input type="text" id="modalPlayer2" required placeholder="VD: Nam / Đức" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cặp Đấu 2</label>
+                        <input type="text" id="modalPlayer2" required placeholder="VD: N. Hùng & H. Tuấn" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -564,12 +696,11 @@
                             <option value="Sân 1">Sân 1</option>
                             <option value="Sân 2">Sân 2</option>
                             <option value="Sân 3">Sân 3</option>
-                            <option value="Sân 4">Sân 4</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Thời Gian</label>
-                        <input type="text" id="modalTime" required placeholder="VD: 18:00 - 19:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green" value="18:00">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Khung Giờ</label>
+                        <input type="text" id="modalTime" required placeholder="16:00 - 17:00" value="16:00 - 17:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
                     </div>
                 </div>
                 <div class="pt-4 flex space-x-3">
@@ -580,39 +711,39 @@
         </div>
     </div>
 
-    <!-- Modal: Update Score -->
+    <!-- Modal: Score Update -->
     <div id="scoreModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-6 transform transition-all">
             <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                 <h3 class="text-xl font-bold text-slate-900 flex items-center">
-                    <i class="fa-solid fa-pen-to-square text-pickle-green mr-2"></i> Cập Nhật Tỉ Số Trận Đấu
+                    <i class="fa-solid fa-pen-to-square text-pickle-green mr-2"></i> Cập Nhật Tỉ Số
                 </h3>
                 <button onclick="closeModal('scoreModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
-            <input type="hidden" id="editMatchId">
-            <div class="space-y-4 text-center">
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <h4 id="scoreMatchTitle" class="font-bold text-slate-800 text-base mb-1">Đội 1 vs Đội 2</h4>
-                    <p id="scoreMatchCourt" class="text-xs text-slate-500">Sân 1 - 18:00</p>
+            <div class="space-y-4">
+                <input type="hidden" id="editMatchId">
+                <div>
+                    <h4 id="scoreMatchTitle" class="font-bold text-slate-800 text-base">Đội 1 vs Đội 2</h4>
+                    <p id="scoreMatchCourt" class="text-xs text-slate-400">Sân 1 | 16:00</p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 items-center">
-                    <div class="space-y-2">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center space-y-2">
                         <label id="labelTeam1" class="block text-xs font-bold text-slate-700 truncate">Đội 1</label>
-                        <input type="number" id="scoreTeam1" min="0" max="30" class="w-20 mx-auto text-center bg-slate-50 border-2 border-slate-200 rounded-xl py-3 text-2xl font-bold text-slate-800 focus:outline-none focus:border-pickle-green" value="0">
+                        <input type="number" id="scoreTeam1" min="0" max="30" class="w-20 text-center mx-auto bg-white border border-slate-200 rounded-xl py-2 text-xl font-black text-pickle-green focus:outline-none" value="0">
                     </div>
-                    <div class="space-y-2">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center space-y-2">
                         <label id="labelTeam2" class="block text-xs font-bold text-slate-700 truncate">Đội 2</label>
-                        <input type="number" id="scoreTeam2" min="0" max="30" class="w-20 mx-auto text-center bg-slate-50 border-2 border-slate-200 rounded-xl py-3 text-2xl font-bold text-slate-800 focus:outline-none focus:border-pickle-green" value="0">
+                        <input type="number" id="scoreTeam2" min="0" max="30" class="w-20 text-center mx-auto bg-white border border-slate-200 rounded-xl py-2 text-xl font-black text-pickle-green focus:outline-none" value="0">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Trạng Thái Trận Đấu</label>
                     <select id="editMatchStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
-                        <option value="UPCOMING">Sắp diễn ra</option>
-                        <option value="LIVE">Đang thi đấu (Live)</option>
-                        <option value="COMPLETED">Đã kết thúc</option>
+                        <option value="UPCOMING">Sắp diễn ra (UPCOMING)</option>
+                        <option value="LIVE">Đang trực tiếp (LIVE)</option>
+                        <option value="COMPLETED">Đã hoàn thành (COMPLETED)</option>
                     </select>
                 </div>
 
@@ -799,18 +930,22 @@
                 { id: 106, tournament: "Độc Lập Cup 2026", player1: "Vũ Minh Quân & Trần Đức Long", player2: "Lê Hoàng Nam & Phạm Quốc Bảo", court: "Sân 1", time: "19:30 - 20:30", score1: 0, score2: 0, status: "UPCOMING" }
             ],
             players: [
-                { id: 1, name: "Vũ Minh Quân", dupr: "4.15", role: "Đội trưởng / HLV", phone: "0988123456" },
-                { id: 2, name: "Trần Đức Long", dupr: "3.90", role: "Vận động viên Pro", phone: "0977234567" },
-                { id: 3, name: "Nguyễn Văn Hùng", dupr: "3.85", role: "Thành viên CLB", phone: "0912345678" },
-                { id: 4, name: "Hoàng Anh Tuấn", dupr: "3.70", role: "Thành viên CLB", phone: "0933456789" },
-                { id: 5, name: "Lê Hoàng Nam", dupr: "3.65", role: "Thành viên CLB", phone: "0905678901" },
-                { id: 6, name: "Đỗ Thị Mai", dupr: "3.50", role: "Vận động viên Pro", phone: "0966789012" }
+                { id: 1, name: "Vũ Minh Quân", dupr: "4.15", role: "Đội trưởng / HLV", phone: "0988123456", stability: "94%" },
+                { id: 2, name: "Trần Đức Long", dupr: "3.90", role: "Vận động viên Pro", phone: "0977234567", stability: "90%" },
+                { id: 3, name: "Nguyễn Văn Hùng", dupr: "3.85", role: "Thành viên CLB", phone: "0912345678", stability: "88%" },
+                { id: 4, name: "Hoàng Anh Tuấn", dupr: "3.70", role: "Thành viên CLB", phone: "0933456789", stability: "85%" },
+                { id: 5, name: "Lê Hoàng Nam", dupr: "3.65", role: "Thành viên CLB", phone: "0905678901", stability: "82%" },
+                { id: 6, name: "Đỗ Thị Mai", dupr: "3.50", role: "Vận động viên Pro", phone: "0966789012", stability: "86%" }
             ],
+            groups: {
+                "Bảng A": ["Vũ Minh Quân & Trần Đức Long", "Đỗ Thị Mai & Nguyễn Thị Lan"],
+                "Bảng B": ["Nguyễn Văn Hùng & Hoàng Anh Tuấn", "Lê Hoàng Nam & Phạm Quốc Bảo", "Bùi Văn Hải & Ngô Văn Kiên"]
+            },
             bookings: [
-                { name: "Nguyễn Văn Hùng", court: "Sân 1", time: "16:00 - 18:00", date: "2026-06-06", purpose: "Tập luyện đôi", status: "Đã xác nhận" },
-                { name: "Trần Đức Long", court: "Sân 2", time: "18:00 - 20:00", date: "2026-06-06", purpose: "Giao lưu nội bộ", status: "Đã xác nhận" },
-                { name: "Lê Hoàng Nam", court: "Sân 3", time: "06:00 - 08:00", date: "2026-06-07", purpose: "Tập thể lực", status: "Chờ duyệt" }
-            ]
+                { name: "Nguyễn Văn Hùng", court: "Sân 1", time: "16:00 - 18:00", date: "2026-06-06", purpose: "Tập luyện đôi nam", status: "Đã xác nhận" },
+                { name: "Đỗ Thị Mai", court: "Sân 2", time: "18:00 - 20:00", date: "2026-06-06", purpose: "Giao lưu nội bộ", status: "Đã xác nhận" }
+            ],
+            currentMatchFilter: 'ALL'
         };
 
         // Navigation Switching
@@ -825,8 +960,8 @@
             document.getElementById(tabId).classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            // Refresh render if needed
             if(tabId === 'dashboard') renderDashboard();
+            if(tabId === 'rating') renderRatingTab();
             if(tabId === 'tournaments') renderTournamentsTab();
             if(tabId === 'matches') renderMatchesList();
             if(tabId === 'players') renderPlayersGrid();
@@ -862,7 +997,6 @@
             document.getElementById('statActiveTournaments').innerText = appData.tournaments.filter(t => t.status === "Đang diễn ra").length;
             document.getElementById('statTodayMatches').innerText = appData.matches.length + " Trận";
 
-            // Dashboard matches (first 4)
             const matchContainer = document.getElementById('dashboardMatchesList');
             matchContainer.innerHTML = appData.matches.slice(0, 4).map(m => `
                 <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-slate-100 transition-all">
@@ -886,7 +1020,6 @@
                 </div>
             `).join('');
 
-            // Dashboard Leaderboard (Top 3)
             const curT = appData.tournaments.find(t => t.id === appData.activeTournamentId) || appData.tournaments[0];
             const lbContainer = document.getElementById('dashboardLeaderboard');
             lbContainer.innerHTML = curT.leaderboard.slice(0, 3).map((item, idx) => `
@@ -907,6 +1040,46 @@
             `).join('');
         }
 
+        // Render Rating Tab with Search Support
+        function renderRatingTab(searchQuery = '') {
+            const tbody = document.getElementById('ratingTableBody');
+            const filteredPlayers = searchQuery 
+                ? appData.players.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                : appData.players;
+
+            if(filteredPlayers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">Không tìm thấy vận động viên phù hợp.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredPlayers.map(p => `
+                <tr class="hover:bg-slate-50 transition-all border-b border-slate-100">
+                    <td class="py-3 px-4 font-bold text-slate-800 flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-pickle-green/10 text-pickle-green font-extrabold flex items-center justify-center text-xs">
+                            ${p.name.split(' ').pop().charAt(0)}
+                        </div>
+                        <span>${p.name}</span>
+                    </td>
+                    <td class="py-3 px-4 text-slate-600 text-xs font-medium">${p.role}</td>
+                    <td class="py-3 px-4 text-center font-black text-pickle-green text-base">DUPR ${p.dupr}</td>
+                    <td class="py-3 px-4 text-center text-slate-600 font-semibold">${p.stability || '85%'}</td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="bg-emerald-50 text-pickle-green font-bold text-xs px-2.5 py-1 rounded-full">
+                            ${parseFloat(p.dupr) >= 4.0 ? 'Pro Chuyên Nghiệp' : parseFloat(p.dupr) >= 3.5 ? 'Phong Trào Khá' : 'Cơ Bản'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="showToast('Xem hồ sơ DUPR SportConnect của VĐV: ${p.name}')" class="text-xs text-pickle-green hover:underline font-semibold">Tra cứu DUPR</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function handleSearchRating() {
+            const query = document.getElementById('searchRatingInput').value;
+            renderRatingTab(query);
+        }
+
         // Render Tournaments Tab
         function renderTournamentsTab() {
             const tabsContainer = document.getElementById('tournamentTabsContainer');
@@ -923,6 +1096,26 @@
             document.getElementById('currentTourneyFormat').innerText = curT.format;
             document.getElementById('currentTourneyDesc').innerText = curT.desc;
             document.getElementById('currentTourneyBadge').innerText = curT.status;
+
+            const groupsContainer = document.getElementById('groupsContainer');
+            groupsContainer.innerHTML = Object.entries(appData.groups).map(([gName, members]) => `
+                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h5 class="font-extrabold text-slate-800 text-sm flex items-center">
+                            <i class="fa-solid fa-layer-group text-pickle-green mr-2"></i> ${gName}
+                        </h5>
+                        <span class="text-xs text-slate-400">${members.length} Đội</span>
+                    </div>
+                    <ul class="space-y-2">
+                        ${members.map(m => `
+                            <li class="bg-white p-2.5 rounded-xl border border-slate-100 text-xs font-semibold text-slate-700 flex justify-between items-center shadow-xs">
+                                <span><i class="fa-solid fa-user-group text-pickle-green mr-1.5"></i> ${m}</span>
+                                <span class="text-[10px] bg-emerald-50 text-pickle-green px-2 py-0.5 rounded">Đã sẵn sàng</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
 
             const lbBody = document.getElementById('tournamentLeaderboardBody');
             lbBody.innerHTML = curT.leaderboard.map((item, idx) => `
@@ -946,51 +1139,47 @@
         }
 
         // Render Matches List
-        function renderMatchesList() {
-            const filterCourt = document.getElementById('filterCourt').value;
-            const filterStatus = document.getElementById('filterStatus').value;
-
-            let filtered = appData.matches.filter(m => {
-                let matchCourt = filterCourt === 'ALL' || m.court === filterCourt;
-                let matchStatus = filterStatus === 'ALL' || m.status === filterStatus;
-                return matchCourt && matchStatus;
+        function filterMatches(status) {
+            appData.currentMatchFilter = status;
+            document.querySelectorAll('.match-filter-btn').forEach(btn => {
+                if(btn.dataset.filter === status) {
+                    btn.className = "match-filter-btn px-4 py-2 bg-emerald-50 text-pickle-green font-bold rounded-xl text-xs";
+                } else {
+                    btn.className = "match-filter-btn px-4 py-2 bg-white text-slate-600 hover:bg-slate-50 font-semibold rounded-xl text-xs border border-slate-200";
+                }
             });
+            renderMatchesList();
+        }
 
-            document.getElementById('totalMatchesCount').innerText = filtered.length;
-
-            const container = document.getElementById('fullMatchesListContainer');
-            if(filtered.length === 0) {
-                container.innerHTML = `<div class="col-span-2 text-center py-12 text-slate-400 bg-white rounded-2xl border border-slate-100">Không tìm thấy trận đấu phù hợp.</div>`;
-                return;
-            }
+        function renderMatchesList() {
+            const container = document.getElementById('matchesListContainer');
+            const filtered = appData.currentMatchFilter === 'ALL' 
+                ? appData.matches 
+                : appData.matches.filter(m => m.status === appData.currentMatchFilter);
 
             container.innerHTML = filtered.map(m => `
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-4 hover:shadow-md transition-all">
                     <div class="flex justify-between items-center">
+                        <span class="bg-emerald-50 text-pickle-green font-bold text-xs px-3 py-1 rounded-full"><i class="fa-solid fa-location-dot mr-1"></i> ${m.court}</span>
                         <div class="flex items-center space-x-2">
-                            <span class="bg-emerald-50 text-pickle-green text-xs font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-table-tennis-paddle-ball mr-1"></i>${m.court}</span>
                             <span class="text-xs text-slate-400 font-medium"><i class="fa-regular fa-clock mr-1"></i>${m.time}</span>
-                        </div>
-                        <div>
-                            ${m.status === 'COMPLETED' ? '<span class="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-full">Đã kết thúc</span>' :
-                              m.status === 'LIVE' ? '<span class="bg-red-100 text-red-600 text-xs font-bold px-2.5 py-1 rounded-full animate-pulse">Đang Live</span>' :
-                              '<span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">Sắp diễn ra</span>'}
+                            ${m.status === 'COMPLETED' ? '<span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded">Hoàn thành</span>' :
+                              m.status === 'LIVE' ? '<span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded animate-pulse">Trực tiếp</span>' :
+                              '<span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded">Sắp đấu</span>'}
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-5 items-center gap-2 py-2">
-                        <div class="col-span-2 text-right">
-                            <h4 class="font-bold text-slate-800 text-sm sm:text-base">${m.player1}</h4>
-                            <p class="text-xs text-slate-400">Đội 1</p>
+                    <div class="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div class="flex-1 pr-2">
+                            <h4 class="font-bold text-slate-800 text-sm truncate">${m.player1}</h4>
+                            <p class="text-[11px] text-slate-400">Cặp Đấu 1</p>
                         </div>
-                        <div class="col-span-1 text-center">
-                            <div class="bg-slate-900 text-pickle-yellow font-extrabold text-sm sm:text-lg py-1.5 px-2 rounded-xl shadow-inner">
-                                ${m.score1} - ${m.score2}
-                            </div>
+                        <div class="px-4 text-center">
+                            <span class="text-lg font-black ${m.status === 'LIVE' ? 'text-red-600 animate-pulse' : 'text-slate-800'}">${m.score1} - ${m.score2}</span>
                         </div>
-                        <div class="col-span-2 text-left">
-                            <h4 class="font-bold text-slate-800 text-sm sm:text-base">${m.player2}</h4>
-                            <p class="text-xs text-slate-400">Đội 2</p>
+                        <div class="flex-1 pl-2 text-right">
+                            <h4 class="font-bold text-slate-800 text-sm truncate">${m.player2}</h4>
+                            <p class="text-[11px] text-slate-400">Cặp Đấu 2</p>
                         </div>
                     </div>
 
@@ -1033,7 +1222,7 @@
                 match.score1 = s1;
                 match.score2 = s2;
                 match.status = status;
-                showToast("Đã cập nhật tỉ số trận đấu thành công!");
+                showToast("Đã cập nhật tỉ số và đồng bộ DUPR SportConnect thành công!");
                 closeModal('scoreModal');
                 renderMatchesList();
                 renderDashboard();
@@ -1080,6 +1269,38 @@
         }
 
         // Form Handlers
+        function calculateRating(e) {
+            e.preventDefault();
+            const name = document.getElementById('calcPlayerName').value;
+            const s1 = parseInt(document.getElementById('calcSkill1').value);
+            const s2 = parseInt(document.getElementById('calcSkill2').value);
+            const s3 = parseInt(document.getElementById('calcSkill3').value);
+
+            let calculatedDupr = (2.0 + (s1 * 0.4) + (s2 * 0.3) + (s3 * 0.3)).toFixed(2);
+            if(calculatedDupr > 5.0) calculatedDupr = "5.00";
+
+            appData.players.push({
+                id: Date.now(),
+                name: name,
+                dupr: calculatedDupr,
+                role: "Thành viên CLB",
+                phone: "0900000000",
+                stability: "88%"
+            });
+
+            closeModal('ratingCalculatorModal');
+            document.getElementById('ratingCalcForm').reset();
+            showToast(`Đã chấm trình SportConnect thành công cho ${name}: DUPR ${calculatedDupr}!`);
+            renderRatingTab();
+            renderPlayersGrid();
+        }
+
+        function executeDrawGroups() {
+            closeModal('drawGroupsModal');
+            showToast("Đã bốc thăm chia bảng đấu tự động theo trình độ DUPR thành công!");
+            renderTournamentsTab();
+        }
+
         function handleCreateMatch(e) {
             e.preventDefault();
             const newMatch = {
@@ -1158,7 +1379,6 @@
 
         function generateTournamentSchedule() {
             showToast("Đã tự động sinh lịch thi đấu vòng tròn và phân bổ sân thành công!");
-            // Add sample automatically generated matches
             appData.matches.unshift({
                 id: Date.now(),
                 tournament: "Độc Lập Cup 2026",
@@ -1180,12 +1400,12 @@
 
         // Initialize App on Load
         window.onload = function() {
-            // Set default date to today in booking modal
             const todayStr = new Date().toISOString().split('T')[0];
             const dateInput = document.getElementById('bookDate');
             if(dateInput) dateInput.value = todayStr;
 
             renderDashboard();
+            renderRatingTab();
             renderTournamentsTab();
             renderMatchesList();
             renderPlayersGrid();
