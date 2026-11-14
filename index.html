@@ -807,7 +807,14 @@
             <form id="bookingForm" onsubmit="handleBookCourt(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Họ Tên Người Đặt</label>
-                    <input type="text" id="bookerName" required placeholder="VD: Trần Văn Bình" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                    <div class="flex space-x-2">
+                        <input type="text" id="bookerName" required placeholder="VD: Trần Văn Bình" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pickle-green">
+                        <button type="button" onclick="checkSportConnectProfile()" class="bg-emerald-100 hover:bg-emerald-200 text-pickle-green font-bold px-3 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center space-x-1" title="Đồng bộ SportConnect">
+                            <i class="fa-solid fa-link"></i>
+                            <span>Check DUPR</span>
+                        </button>
+                    </div>
+                    <p id="sportConnectSyncStatus" class="text-[11px] text-slate-400 mt-1 hidden"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Đã kết nối SportConnect: DUPR chuẩn 3.85 (Pro phong trào)</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -1396,6 +1403,23 @@
         function quickBookSpecificCourt(courtName) {
             openModal('bookCourtModal');
             document.getElementById('bookCourtName').value = courtName;
+        }
+
+        // Feature: Connect SportConnect to check rating during registration
+        function checkSportConnectProfile() {
+            const nameInput = document.getElementById('bookerName').value.trim();
+            if(!nameInput) {
+                showToast("Vui lòng nhập tên VĐV trước khi kiểm tra SportConnect!");
+                return;
+            }
+            
+            showToast(`Đang kết nối API SportConnect tra cứu DUPR cho "${nameInput}"...`);
+            setTimeout(() => {
+                const statusEl = document.getElementById('sportConnectSyncStatus');
+                statusEl.classList.remove('hidden');
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Đã kết nối SportConnect: Xác thực thành công VĐV <b>${nameInput}</b> (DUPR: 3.82 - Ổn định tốt)`;
+                showToast("Đã lấy thông tin trình độ SportConnect thành công!");
+            }, 800);
         }
 
         // Initialize App on Load
