@@ -346,38 +346,63 @@
 
             <div id="add-pair-panel" class="hidden bg-white border-2 border-limeclub-400 p-4 sm:p-5 rounded-2xl space-y-3.5 shadow-sm animate-modal-pop">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                    <h3 class="font-extrabold text-forest-800 text-sm sm:text-base"><i class="fa-solid fa-user-plus text-limeclub-600 mr-2"></i> Thêm Cặp Đôi Thi Đấu</h3>
-                    <button type="button" onclick="toggleAddPairPanel(false)" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
+                    <div>
+                        <h3 class="font-extrabold text-forest-800 text-sm sm:text-base"><i class="fa-solid fa-user-plus text-limeclub-600 mr-2"></i> Đăng Ký Cặp VĐV (Không chọn bảng trước)</h3>
+                        <p class="text-[11px] text-slate-500">Chọn Giới tính & Trình độ (A, B, C) của từng VĐV — Bảng đấu sẽ được quay Random công khai.</p>
+                    </div>
+                    <button type="button" onclick="toggleAddPairPanel(false)" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark text-xs"></i></button>
                 </div>
 
-                <form id="form-add-pair" onsubmit="handleAddPair(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
-                    <div class="sm:col-span-3">
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Nội dung thi đấu</label>
-                        <select id="pair-category-select" class="compact-select w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold text-forest-800">
-                            <option value="DOI_NAM">Đôi Nam</option>
-                            <option value="DOI_NU">Đôi Nữ</option>
-                            <option value="DOI_HH">Đôi Hỗn Hợp (Nam Nữ)</option>
-                        </select>
+                <form id="form-add-pair" onsubmit="handleAddPair(event)" class="space-y-3">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <!-- VĐV 1 -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                            <div class="text-xs font-extrabold text-forest-800 uppercase">VĐV 1 (Đứng ô Phải ban đầu)</div>
+                            <div class="grid grid-cols-12 gap-2">
+                                <input type="text" id="pair-player1-input" required placeholder="Họ tên VĐV 1..." class="col-span-12 sm:col-span-6 bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-forest-600">
+                                <select id="pair-p1-gender" onchange="autoDetectPairCategory()" class="compact-select col-span-6 sm:col-span-3 bg-white border border-slate-300 rounded-xl px-2 py-2 text-xs font-bold text-slate-800">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                                <select id="pair-p1-level" class="compact-select col-span-6 sm:col-span-3 bg-white border border-slate-300 rounded-xl px-2 py-2 text-xs font-extrabold text-forest-700">
+                                    <option value="A">Trình A</option>
+                                    <option value="B" selected>Trình B</option>
+                                    <option value="C">Trình C</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- VĐV 2 -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                            <div class="text-xs font-extrabold text-forest-800 uppercase">VĐV 2 (Đứng ô Trái ban đầu)</div>
+                            <div class="grid grid-cols-12 gap-2">
+                                <input type="text" id="pair-player2-input" required placeholder="Họ tên VĐV 2..." class="col-span-12 sm:col-span-6 bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-forest-600">
+                                <select id="pair-p2-gender" onchange="autoDetectPairCategory()" class="compact-select col-span-6 sm:col-span-3 bg-white border border-slate-300 rounded-xl px-2 py-2 text-xs font-bold text-slate-800">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                                <select id="pair-p2-level" class="compact-select col-span-6 sm:col-span-3 bg-white border border-slate-300 rounded-xl px-2 py-2 text-xs font-extrabold text-forest-700">
+                                    <option value="A">Trình A</option>
+                                    <option value="B" selected>Trình B</option>
+                                    <option value="C">Trình C</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="sm:col-span-2">
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Bảng đấu</label>
-                        <select id="pair-group-select" class="compact-select w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
-                            <option value="Bảng A">Bảng A</option>
-                            <option value="Bảng B">Bảng B</option>
-                            <option value="Bảng C">Bảng C</option>
-                            <option value="Bảng D">Bảng D</option>
-                        </select>
-                    </div>
-                    <div class="sm:col-span-3">
-                        <label class="block text-xs font-bold text-slate-600 mb-1">VĐV 1 (Đứng ô Phải ban đầu)</label>
-                        <input type="text" id="pair-player1-input" required placeholder="Họ tên VĐV 1..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-forest-600">
-                    </div>
-                    <div class="sm:col-span-3">
-                        <label class="block text-xs font-bold text-slate-600 mb-1">VĐV 2 (Đứng ô Trái ban đầu)</label>
-                        <input type="text" id="pair-player2-input" required placeholder="Họ tên VĐV 2..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-forest-600">
-                    </div>
-                    <div class="sm:col-span-1">
-                        <button type="submit" class="w-full py-2.5 bg-forest-700 hover:bg-forest-600 text-ivory font-extrabold rounded-xl text-xs shadow-sm">Lưu</button>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs font-bold text-slate-600 shrink-0">Nội dung thi đấu:</label>
+                            <select id="pair-category-select" class="compact-select bg-limeclub-50 border border-limeclub-400 rounded-xl px-3 py-2 text-xs font-extrabold text-forest-800">
+                                <option value="DOI_NAM">Đôi Nam</option>
+                                <option value="DOI_NU">Đôi Nữ</option>
+                                <option value="DOI_HH">Đôi Hỗn Hợp (Nam Nữ)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2 justify-end">
+                            <button type="button" onclick="toggleAddPairPanel(false)" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Đóng</button>
+                            <button type="submit" class="px-5 py-2 bg-forest-700 hover:bg-forest-600 text-ivory font-extrabold rounded-xl text-xs shadow-sm"><i class="fa-solid fa-check mr-1"></i> Lưu Cặp VĐV</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -413,7 +438,8 @@
                             <p class="text-[11px] sm:text-xs text-slate-500">Áp dụng chuẩn luật Pickleball quốc tế (Gọi điểm 3 số, đổi ô chẵn/lẻ).</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
+                    <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
+                        <button onclick="openRandomDrawModal()" class="justify-center px-3.5 py-2 rounded-xl bg-limeclub-500 hover:bg-limeclub-400 text-forest-900 text-xs font-black flex items-center shadow-2xs border border-forest-700/20"><i class="fa-solid fa-shuffle mr-1.5"></i> Quay Chia Bảng</button>
                         <button onclick="manualTriggerAdvance()" class="justify-center px-3 py-2 rounded-xl bg-sun-500 hover:bg-sun-400 text-forest-900 text-xs font-extrabold flex items-center shadow-2xs"><i class="fa-solid fa-forward-fast mr-1"></i> Cập nhật vòng</button>
                         <button onclick="generateAllCategoriesSchedule()" class="justify-center px-3 py-2 rounded-xl bg-forest-700 hover:bg-forest-600 text-ivory text-xs font-bold flex items-center"><i class="fa-solid fa-calendar-check mr-1"></i> Xếp lịch</button>
                         <button onclick="confirmResetDefault()" class="justify-center px-3 py-2 rounded-xl bg-slate-100 text-rose-600 hover:bg-rose-50 text-xs font-bold border border-slate-200 flex items-center"><i class="fa-solid fa-rotate-right mr-1"></i> Mẫu</button>
@@ -471,6 +497,69 @@
         </section>
 
     </main>
+
+    <!-- MODAL QUAY RANDOM CHIA BẢNG CÔNG KHAI -->
+    <div id="random-draw-modal" onclick="if(event.target === this) closeRandomDrawModal()" class="fixed inset-0 z-[78] flex items-center justify-center bg-slate-950/75 backdrop-blur-sm hidden p-3 sm:p-4">
+        <div class="bg-white border-2 border-limeclub-500 w-full max-w-2xl p-4 sm:p-6 rounded-3xl shadow-2xl space-y-4 animate-modal-pop max-h-[92dvh] flex flex-col">
+            <div class="flex justify-between items-start gap-2 border-b border-slate-200 pb-3 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-forest-700 text-sun-400 flex items-center justify-center text-lg shadow-sm shrink-0">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-forest-800 text-sm sm:text-base">Quay Random Chia Bảng Thi Đấu</h3>
+                        <p class="text-[11px] text-slate-500 font-medium">Bốc thăm ngẫu nhiên các cặp đã đăng ký vào các bảng & tự động xếp lịch</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeRandomDrawModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-limeclub-50/70 p-3 rounded-2xl border border-limeclub-200 shrink-0">
+                <div>
+                    <label class="block text-[10.5px] font-extrabold text-forest-800 uppercase mb-1">Nội dung quay bảng</label>
+                    <select id="draw-category-select" onchange="previewRandomDrawPool()" class="compact-select w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold text-forest-800">
+                        <option value="ALL">Tất cả nội dung (Đôi Nam, Nữ, HH)</option>
+                        <option value="DOI_NAM">Chỉ Đôi Nam</option>
+                        <option value="DOI_NU">Chỉ Đôi Nữ</option>
+                        <option value="DOI_HH">Chỉ Đôi Hỗn Hợp</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10.5px] font-extrabold text-forest-800 uppercase mb-1">Số bảng muốn chia</label>
+                    <select id="draw-group-count-select" class="compact-select w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold text-slate-800">
+                        <option value="AUTO">Tự động (3-4 cặp / bảng)</option>
+                        <option value="1">1 Bảng (Vòng tròn tất cả)</option>
+                        <option value="2">2 Bảng (Bảng A - Bảng B)</option>
+                        <option value="3">3 Bảng (Bảng A - B - C)</option>
+                        <option value="4">4 Bảng (Bảng A - B - C - D)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10.5px] font-extrabold text-forest-800 uppercase mb-1">Chế độ bốc thăm</label>
+                    <select id="draw-seed-mode-select" class="compact-select w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold text-slate-800">
+                        <option value="PURE_RANDOM">Ngẫu nhiên hoàn toàn 100%</option>
+                        <option value="LEVEL_BALANCED">Random cân bằng trình A - B - C</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="random-draw-stage-box" class="flex-1 overflow-y-auto pr-1 space-y-3 min-h-[180px] bg-slate-50/70 p-3 rounded-2xl border border-slate-200"></div>
+
+            <div class="pt-2 border-t border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 shrink-0">
+                <button type="button" id="btn-spin-random-draw" onclick="spinRandomGroupDraw()" class="px-5 py-2.5 rounded-xl bg-sun-500 hover:bg-sun-400 text-forest-900 font-black text-xs uppercase shadow-sm flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-dice"></i> Quay Random Ngay
+                </button>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="btn-confirm-random-draw" onclick="applyRandomDrawAndSchedule()" disabled class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-forest-700 disabled:opacity-40 hover:bg-forest-600 text-ivory font-extrabold text-xs uppercase shadow-sm flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-check-double text-sun-400"></i> Chốt Bảng & Xếp Lịch
+                    </button>
+                    <button type="button" onclick="closeRandomDrawModal()" class="px-4 py-2.5 rounded-xl bg-slate-200 text-slate-800 text-xs font-bold">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL QR KHÁN GIẢ -->
     <div id="spectator-qr-modal" onclick="if(event.target === this) closeSpectatorQrModal()" class="fixed inset-0 z-[75] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden p-3 sm:p-4">
@@ -670,14 +759,14 @@
         };
 
         const DEFAULT_PAIRS = [
-            { id: 'p_dn_1', category: 'DOI_NAM', group: 'Bảng A', p1Name: 'Minh Quân', p2Name: 'Hoàng Nam' },
-            { id: 'p_dn_2', category: 'DOI_NAM', group: 'Bảng A', p1Name: 'Đức Anh', p2Name: 'Quốc Bảo' },
-            { id: 'p_dn_3', category: 'DOI_NAM', group: 'Bảng B', p1Name: 'Tuấn Kiệt', p2Name: 'Văn Hùng' },
-            { id: 'p_dn_4', category: 'DOI_NAM', group: 'Bảng B', p1Name: 'Thanh Tùng', p2Name: 'Gia Huy' },
-            { id: 'p_nu_1', category: 'DOI_NU', group: 'Bảng A', p1Name: 'Lan Anh', p2Name: 'Thu Hà' },
-            { id: 'p_nu_2', category: 'DOI_NU', group: 'Bảng A', p1Name: 'Mai Phương', p2Name: 'Ngọc Ánh' },
-            { id: 'p_hh_1', category: 'DOI_HH', group: 'Bảng A', p1Name: 'Minh Quân', p2Name: 'Lan Anh' },
-            { id: 'p_hh_2', category: 'DOI_HH', group: 'Bảng A', p1Name: 'Đức Anh', p2Name: 'Mai Phương' }
+            { id: 'p_dn_1', category: 'DOI_NAM', group: 'Chưa chia bảng', p1Name: 'Minh Quân', p1Gender: 'Nam', p1Level: 'A', p2Name: 'Hoàng Nam', p2Gender: 'Nam', p2Level: 'B' },
+            { id: 'p_dn_2', category: 'DOI_NAM', group: 'Chưa chia bảng', p1Name: 'Đức Anh', p1Gender: 'Nam', p1Level: 'A', p2Name: 'Quốc Bảo', p2Gender: 'Nam', p2Level: 'C' },
+            { id: 'p_dn_3', category: 'DOI_NAM', group: 'Chưa chia bảng', p1Name: 'Tuấn Kiệt', p1Gender: 'Nam', p1Level: 'B', p2Name: 'Văn Hùng', p2Gender: 'Nam', p2Level: 'B' },
+            { id: 'p_dn_4', category: 'DOI_NAM', group: 'Chưa chia bảng', p1Name: 'Thanh Tùng', p1Gender: 'Nam', p1Level: 'A', p2Name: 'Gia Huy', p2Gender: 'Nam', p2Level: 'C' },
+            { id: 'p_nu_1', category: 'DOI_NU', group: 'Chưa chia bảng', p1Name: 'Lan Anh', p1Gender: 'Nữ', p1Level: 'A', p2Name: 'Thu Hà', p2Gender: 'Nữ', p2Level: 'B' },
+            { id: 'p_nu_2', category: 'DOI_NU', group: 'Chưa chia bảng', p1Name: 'Mai Phương', p1Gender: 'Nữ', p1Level: 'B', p2Name: 'Ngọc Ánh', p2Gender: 'Nữ', p2Level: 'C' },
+            { id: 'p_hh_1', category: 'DOI_HH', group: 'Chưa chia bảng', p1Name: 'Minh Quân', p1Gender: 'Nam', p1Level: 'A', p2Name: 'Lan Anh', p2Gender: 'Nữ', p2Level: 'A' },
+            { id: 'p_hh_2', category: 'DOI_HH', group: 'Chưa chia bảng', p1Name: 'Đức Anh', p1Gender: 'Nam', p1Level: 'A', p2Name: 'Mai Phương', p2Gender: 'Nữ', p2Level: 'B' }
         ];
 
         const DEFAULT_MATCHES = [
@@ -751,7 +840,7 @@
             return {
                 tournamentName: 'Giải Pickleball Nội Bộ CLB Độc Lập',
                 pairs: JSON.parse(JSON.stringify(DEFAULT_PAIRS)),
-                matches: JSON.parse(JSON.stringify(DEFAULT_MATCHES)),
+                matches: [],
                 targetPoints: 11,
                 winByTwo: true,
                 courtCount: 4,
@@ -1250,7 +1339,7 @@
             appState = {
                 tournamentName: 'Giải Pickleball Nội Bộ CLB Độc Lập',
                 pairs: JSON.parse(JSON.stringify(DEFAULT_PAIRS)),
-                matches: JSON.parse(JSON.stringify(DEFAULT_MATCHES)),
+                matches: [],
                 targetPoints: 11,
                 winByTwo: true,
                 courtCount: 4,
@@ -1670,26 +1759,44 @@
             panel.classList.toggle('hidden', !open);
         }
 
+        function autoDetectPairCategory() {
+            const g1 = document.getElementById('pair-p1-gender')?.value || 'Nam';
+            const g2 = document.getElementById('pair-p2-gender')?.value || 'Nam';
+            const catSel = document.getElementById('pair-category-select');
+            if (!catSel) return;
+            if (g1 === 'Nam' && g2 === 'Nam') catSel.value = 'DOI_NAM';
+            else if (g1 === 'Nữ' && g2 === 'Nữ') catSel.value = 'DOI_NU';
+            else catSel.value = 'DOI_HH';
+        }
+
         function handleAddPair(e) {
             e.preventDefault();
             if (!isAdminLoggedIn()) return;
             const cat = document.getElementById('pair-category-select').value;
-            const grp = document.getElementById('pair-group-select').value;
             const p1 = document.getElementById('pair-player1-input').value.trim();
+            const p1Gender = document.getElementById('pair-p1-gender').value;
+            const p1Level = document.getElementById('pair-p1-level').value;
             const p2 = document.getElementById('pair-player2-input').value.trim();
+            const p2Gender = document.getElementById('pair-p2-gender').value;
+            const p2Level = document.getElementById('pair-p2-level').value;
             if (!p1 || !p2) return;
 
             appState.pairs.push({
                 id: 'pair_' + Date.now(),
                 category: cat,
-                group: grp,
+                group: 'Chưa chia bảng',
                 p1Name: p1,
-                p2Name: p2
+                p1Gender,
+                p1Level,
+                p2Name: p2,
+                p2Gender,
+                p2Level
             });
             document.getElementById('form-add-pair').reset();
+            autoDetectPairCategory();
             toggleAddPairPanel(false);
             saveAppState();
-            showToast(`✅ Đã thêm cặp ${p1} / ${p2} (${CATEGORY_LABELS[cat]})!`);
+            showToast(`✅ Đã đăng ký cặp ${p1} (${p1Level}) / ${p2} (${p2Level})!`);
         }
 
         function deletePair(pairId) {
@@ -1711,18 +1818,207 @@
                 container.innerHTML = `<div class="col-span-full text-center py-8 bg-white rounded-2xl border border-limeclub-200 text-xs text-slate-400">Chưa có cặp VĐV nào đăng ký.</div>`;
                 return;
             }
-            container.innerHTML = list.map(p => `
-                <div class="bg-white border border-limeclub-200 rounded-2xl p-3.5 flex items-center justify-between gap-2 shadow-2xs">
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-1.5">
-                            <span class="px-2 py-0.5 rounded bg-limeclub-100 text-forest-800 text-[10px] font-extrabold">${CATEGORY_LABELS[p.category]}</span>
-                            <span class="px-2 py-0.5 rounded bg-sun-100 text-forest-800 text-[10px] font-bold">${p.group}</span>
+            container.innerHTML = list.map(p => {
+                const g1 = p.p1Gender || 'Nam', l1 = p.p1Level || 'B';
+                const g2 = p.p2Gender || 'Nam', l2 = p.p2Level || 'B';
+                const isDrawn = p.group && p.group !== 'Chưa chia bảng';
+                const badgeGender = (g) => g === 'Nữ'
+                    ? '<span class="text-pink-600 font-black">♀</span>'
+                    : '<span class="text-sky-600 font-black">♂</span>';
+
+                return `
+                    <div class="bg-white border border-limeclub-200 rounded-2xl p-3.5 flex items-center justify-between gap-2 shadow-2xs">
+                        <div class="min-w-0 space-y-1.5">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded bg-limeclub-100 text-forest-800 text-[10px] font-extrabold">${CATEGORY_LABELS[p.category]}</span>
+                                <span class="px-2 py-0.5 rounded ${isDrawn ? 'bg-sun-200 text-forest-900 font-extrabold' : 'bg-slate-100 text-slate-500 font-semibold'} text-[10px]">${isDrawn ? p.group : 'Chờ quay bảng'}</span>
+                            </div>
+                            <div class="text-xs sm:text-sm font-extrabold text-slate-900 truncate flex items-center gap-1.5">
+                                <span>${badgeGender(g1)} ${p.p1Name} <span class="px-1.5 py-0.2 rounded bg-forest-700 text-sun-400 text-[10px] font-black">${l1}</span></span>
+                                <span class="text-slate-400">/</span>
+                                <span>${badgeGender(g2)} ${p.p2Name} <span class="px-1.5 py-0.2 rounded bg-forest-700 text-sun-400 text-[10px] font-black">${l2}</span></span>
+                            </div>
                         </div>
-                        <div class="text-sm font-extrabold text-slate-900 truncate mt-1">${p.p1Name} / ${p.p2Name}</div>
+                        <button onclick="deletePair('${p.id}')" class="w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-trash text-xs"></i></button>
                     </div>
-                    <button onclick="deletePair('${p.id}')" class="w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-trash text-xs"></i></button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        // =========================================================================
+        // QUAY RANDOM CHIA BẢNG CÔNG KHAI (KHÔNG CHỌN BẢNG TRƯỚC)
+        // =========================================================================
+        let __pendingRandomDrawResult = null;
+        let __isSpinningDraw = false;
+
+        function openRandomDrawModal() {
+            if (!isAdminLoggedIn()) { openLoginModal(); return; }
+            __pendingRandomDrawResult = null;
+            const confirmBtn = document.getElementById('btn-confirm-random-draw');
+            if (confirmBtn) confirmBtn.disabled = true;
+            previewRandomDrawPool();
+            document.getElementById('random-draw-modal').classList.remove('hidden');
+            document.getElementById('random-draw-modal').classList.add('flex');
+        }
+
+        function closeRandomDrawModal() {
+            if (__isSpinningDraw) return;
+            document.getElementById('random-draw-modal').classList.add('hidden');
+            document.getElementById('random-draw-modal').classList.remove('flex');
+        }
+
+        function previewRandomDrawPool() {
+            const catFilter = document.getElementById('draw-category-select')?.value || 'ALL';
+            const stageBox = document.getElementById('random-draw-stage-box');
+            if (!stageBox) return;
+
+            const cats = catFilter === 'ALL' ? ['DOI_NAM', 'DOI_NU', 'DOI_HH'] : [catFilter];
+            let html = '';
+            cats.forEach(c => {
+                const list = (appState.pairs || []).filter(p => p.category === c);
+                if (list.length === 0) return;
+                html += `
+                    <div class="bg-white border border-slate-200 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between text-xs font-extrabold text-forest-800 border-b border-slate-100 pb-1">
+                            <span>${CATEGORY_LABELS[c]}</span>
+                            <span class="text-limeclub-700">${list.length} cặp sẵn sàng quay</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${list.map(p => `<span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 text-xs font-bold">${p.p1Name} (${p.p1Level || 'B'}) / ${p.p2Name} (${p.p2Level || 'B'})</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            stageBox.innerHTML = html || `<div class="text-center py-8 text-xs text-slate-400">Chưa có cặp VĐV nào để quay chia bảng.</div>`;
+        }
+
+        function getPairLevelNumeric(pair) {
+            const scoreOf = (lv) => lv === 'A' ? 3 : (lv === 'B' ? 2 : 1);
+            return scoreOf(pair.p1Level || 'B') + scoreOf(pair.p2Level || 'B');
+        }
+
+        function computeRandomGroupsForCategory(catPairs, countMode, seedMode) {
+            if (catPairs.length === 0) return {};
+            let numGroups = countMode === 'AUTO'
+                ? (catPairs.length <= 5 ? 1 : (catPairs.length <= 10 ? 2 : (catPairs.length <= 15 ? 3 : 4)))
+                : parseInt(countMode, 10);
+            numGroups = Math.max(1, Math.min(numGroups, Math.floor(catPairs.length / 2) || 1));
+
+            const groupLabels = Array.from({ length: numGroups }, (_, idx) => `Bảng ${String.fromCharCode(65 + idx)}`);
+            const result = {};
+            groupLabels.forEach(g => { result[g] = []; });
+
+            // Xáo trộn Fisher-Yates chuẩn ngẫu nhiên
+            const shuffled = [...catPairs];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+
+            if (seedMode === 'LEVEL_BALANCED') {
+                // Sắp xếp theo tổng trình độ A-B-C (sau khi đã xáo trộn ngẫu nhiên các cặp cùng trình) rồi chia rắn (Snake)
+                shuffled.sort((a, b) => getPairLevelNumeric(b) - getPairLevelNumeric(a));
+                shuffled.forEach((pair, idx) => {
+                    const row = Math.floor(idx / numGroups);
+                    const col = idx % numGroups;
+                    const gIdx = (row % 2 === 0) ? col : (numGroups - 1 - col);
+                    result[groupLabels[gIdx]].push(pair);
+                });
+            } else {
+                // Ngẫu nhiên hoàn toàn 100%
+                shuffled.forEach((pair, idx) => {
+                    result[groupLabels[idx % numGroups]].push(pair);
+                });
+            }
+
+            return result;
+        }
+
+        function spinRandomGroupDraw() {
+            if (__isSpinningDraw) return;
+            const catFilter = document.getElementById('draw-category-select')?.value || 'ALL';
+            const countMode = document.getElementById('draw-group-count-select')?.value || 'AUTO';
+            const seedMode = document.getElementById('draw-seed-mode-select')?.value || 'PURE_RANDOM';
+            const stageBox = document.getElementById('random-draw-stage-box');
+            const spinBtn = document.getElementById('btn-spin-random-draw');
+            const confirmBtn = document.getElementById('btn-confirm-random-draw');
+
+            const cats = catFilter === 'ALL' ? ['DOI_NAM', 'DOI_NU', 'DOI_HH'] : [catFilter];
+            const hasAny = cats.some(c => (appState.pairs || []).filter(p => p.category === c).length >= 2);
+            if (!hasAny) {
+                showToast('⚠️ Cần ít nhất 2 cặp VĐV trong nội dung để quay chia bảng!', true);
+                return;
+            }
+
+            __isSpinningDraw = true;
+            if (spinBtn) spinBtn.disabled = true;
+            if (confirmBtn) confirmBtn.disabled = true;
+
+            let ticks = 0;
+            const maxTicks = 14;
+            const interval = setInterval(() => {
+                ticks++;
+                const draftByCat = {};
+                cats.forEach(c => {
+                    const catPairs = (appState.pairs || []).filter(p => p.category === c);
+                    if (catPairs.length > 0) {
+                        draftByCat[c] = computeRandomGroupsForCategory(catPairs, countMode, seedMode);
+                    }
+                });
+
+                const isFinal = ticks >= maxTicks;
+                stageBox.innerHTML = Object.entries(draftByCat).map(([cKey, groupsObj]) => `
+                    <div class="space-y-2">
+                        <div class="text-xs font-black text-forest-800 uppercase flex items-center justify-between">
+                            <span>${CATEGORY_LABELS[cKey]}</span>
+                            <span class="text-[10px] ${isFinal ? 'text-forest-700' : 'text-sun-600 animate-pulse'}">${isFinal ? '✅ Đã chốt kết quả quay' : '🎲 Đang quay ngẫu nhiên...'}</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            ${Object.entries(groupsObj).map(([gName, list]) => `
+                                <div class="bg-white border-2 ${isFinal ? 'border-limeclub-500' : 'border-sun-400'} rounded-xl p-2.5 space-y-1">
+                                    <div class="text-xs font-black text-forest-800 bg-limeclub-100 px-2 py-0.5 rounded-lg flex justify-between">
+                                        <span>${gName}</span>
+                                        <span>${list.length} cặp</span>
+                                    </div>
+                                    ${list.map((p, i) => `
+                                        <div class="text-xs font-bold text-slate-800 px-1.5 py-0.5 flex justify-between">
+                                            <span class="truncate">${i + 1}. ${p.p1Name} / ${p.p2Name}</span>
+                                            <span class="text-[10px] font-black text-forest-700 shrink-0">${p.p1Level || 'B'}-${p.p2Level || 'B'}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+
+                if (isFinal) {
+                    clearInterval(interval);
+                    __isSpinningDraw = false;
+                    __pendingRandomDrawResult = draftByCat;
+                    if (spinBtn) spinBtn.disabled = false;
+                    if (confirmBtn) confirmBtn.disabled = false;
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 55, spread: 65, origin: { y: 0.6 } });
+                    }
+                }
+            }, 95);
+        }
+
+        function applyRandomDrawAndSchedule() {
+            if (!__pendingRandomDrawResult) return;
+            Object.entries(__pendingRandomDrawResult).forEach(([cKey, groupsObj]) => {
+                Object.entries(groupsObj).forEach(([gName, list]) => {
+                    list.forEach(drawnPair => {
+                        const realPair = (appState.pairs || []).find(p => p.id === drawnPair.id);
+                        if (realPair) realPair.group = gName;
+                    });
+                });
+            });
+            __pendingRandomDrawResult = null;
+            closeRandomDrawModal();
+            generateAllCategoriesSchedule();
+            showToast('🎉 Đã áp dụng kết quả Quay Random & Xếp lịch thi đấu!');
         }
 
         function renderAdminMatchesList() {
